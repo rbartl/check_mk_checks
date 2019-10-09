@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# reads output of pve-zsync list and returns CRIT if its to old or not ok/syncing
+# pve-zsync  list
+# SOURCE                   NAME                     STATE     LAST SYNC           TYPE  CON
+# xxxxxxxxxx           ok        2019-10-09_12:30:01 qemu  ssh
+
+status=0
+statustxt=OK
+
+pve-zsync list 2> /dev/null | grep -v ^SOURCE > /tmp/pve_zsync_output
+
+errorcount=0
+
+while read -r line ; do
+  arrIN=(${line//;/ })
+  if [[ ${arrIN[1]} == *"err"* ]]; then
+    errors="${errors} ${arrIN[0]} is in error state "
+    let errorcount=$errorcount+1
+    status=2
+    statustxt=CRITICAL
+  fi
+  datestr=$(echo ${arrIN[2]} | sed 's/_/ /')
+  syncdateplus1day=$(date --date="$datestr + 1 day" "+%s")
+  nowdate=$(date "+%s")
+  if [[ syncdateplus1day -lt $nowdate ]]  ; then
+    errors="${errors} ${arrIN[0]} is too old "
+    let errorcount=$errorcount+1
+    status=2
+    statustxt=CRITICAL
+  fi
+done < /tmp/pve_zsync_output
+
+echo  "$status pvezsync_errors failed=$errorcount $statustxt $errors no errors"

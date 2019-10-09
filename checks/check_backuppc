@@ -12,4 +12,4 @@ fi
 errors=$(cat /tmp/bpc_report | sed -E "s/\ *([EO]*).*]\ ([^\ ]*\ ).*/\1_\2/" | tr -d "\r\n")
 errorcount=$(cat /tmp/bpc_report | wc -l )
 
-echo -n "$status backuppc_errors failed=$errorcount $statustxt $errors"
+echo  "$status backuppc_errors failed=$errorcount $statustxt $errors"

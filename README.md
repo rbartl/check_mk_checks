@@ -9,3 +9,7 @@ have errors or are too old.
 
 non existant (never done) backups are ignored
 
+## pve-zsync
+
+added pve-zsync check - returns a critical error if sync is in error state
+or too old (1 day)
