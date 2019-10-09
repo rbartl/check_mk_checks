@@ -1,0 +1,15 @@
+#!/bin/bash
+
+status=2
+statustxt=CRITICAL
+
+/usr/bin/BackupPC_report -w 48 | grep "^\ *[EO]" > /tmp/bpc_report
+
+if [ ! -s /tmp/bpc_report ]; then
+  status=0
+  statustxt=OK
+fi
+errors=$(cat /tmp/bpc_report | sed -E "s/\ *([EO]*).*]\ ([^\ ]*\ ).*/\1_\2/" | tr -d "\r\n")
+errorcount=$(cat /tmp/bpc_report | wc -l )
+
+echo -n "$status backuppc_errors failed=$errorcount $statustxt $errors"
