@@ -31,4 +31,4 @@ while read -r line ; do
   fi
 done < /tmp/pve_zsync_output
 
-echo  "$status pvezsync_errors failed=$errorcount $statustxt $errors no errors"
+echo  "$status pvezsync_errors failed=$errorcount $statustxt $errors"
